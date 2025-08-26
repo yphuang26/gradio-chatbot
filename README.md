@@ -8,7 +8,7 @@ A simple Gradio chatbot powered by a Hugging Face Transformers text-generation p
 - Auto-detects CUDA; falls back to CPU when no GPU is available
 - Configurable via environment variables
 
-### Setup (PowerShell)
+### Setup & Run Service
 #### Install required packages
 ```shell
 pip install -r requirements.txt
@@ -24,7 +24,7 @@ python ${fileName}
 
 Open `http://localhost:7860` in your browser.
 
-### Environment variables (optional)
+### Environment variables
 - `HF_MODEL_ID`: Override the model id. Default: `google/gemma-2b-it`.
 - `SYSTEM_PROMPT`: Customize the system prompt. Default instructs replies in Traditional Chinese.
 - `PORT`: Server port. Default: `7860`.
