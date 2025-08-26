@@ -1,6 +1,7 @@
-transformers>=4.44.0
-torch>=2.2.0
-gradio>=4.44.0
-safetensors>=0.4.3
-sentencepiece>=0.2.0
-huggingface_hub>=0.23.0
+transformers
+torch
+numpy
+gradio
+safetensors
+sentencepiece
+huggingface_hub
