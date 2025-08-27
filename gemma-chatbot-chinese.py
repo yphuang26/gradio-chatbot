@@ -87,23 +87,62 @@ def ui():
         """)
 
         with gr.Row():
-            max_new_tokens = gr.Slider(64, 2048, value=512, step=16, label="max_new_tokens")
+            max_new_tokens = gr.Slider(15, 256, value=128, step=1, label="max_new_tokens")
             temperature = gr.Slider(0.0, 1.5, value=0.7, step=0.05, label="temperature")
             top_p = gr.Slider(0.1, 1.0, value=0.95, step=0.05, label="top_p")
 
-        chat = gr.ChatInterface(
-            fn=lambda message, history: generate(
-                message,
-                history,
-                int(max_new_tokens.value),
-                float(temperature.value),
-                float(top_p.value),
-            ),
-            type="messages",
-            multimodal=False,
-            stop_btn="停止",
-            submit_btn="送出",
+        chatbot = gr.Chatbot(label="聊天記錄", type="messages")
+        msg = gr.Textbox(label="輸入訊息", placeholder="請輸入您的問題...")
+        
+        with gr.Row():
+            submit_btn = gr.Button("送出", variant="primary")
+            stop_btn = gr.Button("停止", variant="stop")
+            clear = gr.Button("清除對話")
+
+        def user(user_message, history, max_tokens, temp, top_p_val):
+            return "", history + [{"role": "user", "content": user_message}]
+
+        def bot(history, max_tokens, temp, top_p_val):
+            if not history:
+                return history
+            
+            user_message = history[-1]["content"]
+            history_messages = history[:-1]  # Exclude the last user message
+            
+            # Generate response
+            response = generate(user_message, history_messages, max_tokens, temp, top_p_val)
+            history.append({"role": "assistant", "content": response})
+            return history
+
+        # Send button event
+        submit_btn.click(
+            user, 
+            [msg, chatbot, max_new_tokens, temperature, top_p], 
+            [msg, chatbot], 
+            queue=False
+        ).then(
+            bot, 
+            [chatbot, max_new_tokens, temperature, top_p], 
+            chatbot
         )
+
+        # Enter key event
+        msg.submit(
+            user, 
+            [msg, chatbot, max_new_tokens, temperature, top_p], 
+            [msg, chatbot], 
+            queue=False
+        ).then(
+            bot, 
+            [chatbot, max_new_tokens, temperature, top_p], 
+            chatbot
+        )
+
+        # Stop button event
+        stop_btn.click(lambda: None, None, None, queue=False)
+        
+        # Clear chat button event
+        clear.click(lambda: [], None, chatbot, queue=False)
 
     return demo
 
