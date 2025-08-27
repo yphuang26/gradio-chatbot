@@ -114,6 +114,18 @@ def ui():
             history.append({"role": "assistant", "content": response})
             return history
 
+        def stop_generation(history):
+            if not history:
+                return history, ""
+            
+            # Remove the last user message from chat history
+            if history and history[-1]["role"] == "user":
+                user_message = history[-1]["content"]
+                history = history[:-1]  # Remove the last user message
+                return history, user_message
+            
+            return history, ""
+
         # Send button event
         submit_btn.click(
             user, 
@@ -138,8 +150,12 @@ def ui():
             chatbot
         )
 
-        # Stop button event
-        stop_btn.click(lambda: None, None, None, queue=False)
+        # Stop button event - stop generation and return user message to input
+        stop_btn.click(
+            stop_generation,
+            [chatbot],
+            [chatbot, msg]
+        )
         
         # Clear chat button event
         clear.click(lambda: [], None, chatbot, queue=False)
