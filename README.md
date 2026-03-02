@@ -40,3 +40,7 @@ python gemma3-chatbot.py
 ```
 
 Then open `http://localhost:7860` in your browser to start chatting with Gemma 3 27B IT.
+
+#### Reference
+
+[Gemma 3 for Beginners: An Introduction to Google's Open-Source AI](https://huggingface.tw/blog/proflead/gemma-3-tutorial)
