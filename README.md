@@ -10,7 +10,7 @@ A simple Gradio chatbot powered by **Google API** using the `gemma-3-27b-it` mod
 
 ### Requirements
 
-- Python 3.10+ (建議)
+- Python
 - A Google AI Studio API key (for Gemma 3)
 
 ### Setup & Run
