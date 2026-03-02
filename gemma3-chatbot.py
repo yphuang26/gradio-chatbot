@@ -1,7 +1,7 @@
 import gradio as gr
 import google.generativeai as genai
 
-genai.configure(api_key="AIzaSyDA4qOZa_GyTvmMFOR_LHW6vSOHVtZbxsM")
+genai.configure(api_key="[REPLACE-THIS-TEXT-WITH-YOUR-API-KEY]")
 MODEL = genai.GenerativeModel("gemma-3-27b-it")
 
 
