@@ -1,7 +1,3 @@
-transformers
-torch
-numpy
+google-generativeai
+google-genai
 gradio
-safetensors
-sentencepiece
-huggingface_hub

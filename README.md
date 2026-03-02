@@ -1,35 +1,42 @@
-## Gemma 2B IT Chatbot (Gradio)
+## Gemma 3 27B IT Chatbot (Gradio)
 
-A simple Gradio chatbot powered by a Hugging Face Transformers text-generation pipeline. By default it uses `google/gemma-2b-it` and replies in Traditional Chinese.
+A simple Gradio chatbot powered by **Google API** using the `gemma-3-27b-it` model.
+
+此專案提供一個在瀏覽器中使用 Gemma 3 27B IT 的聊天機器人介面。
 
 ### Features
-- Uses `Transformers` pipeline for chat-style text generation
-- Gradio UI with sliders for `max_new_tokens`, `temperature`, and `top_p`
-- Auto-detects CUDA; falls back to CPU when no GPU is available
-- Configurable via environment variables
 
-### Setup & Run Service
-#### Install required packages
+- Uses `google.generativeai` with the `gemma-3-27b-it` model
+- Remembers conversation history and sends it to the model
+- Simple Gradio `ChatInterface` UI
+
+### Requirements
+
+- Python 3.10+ (建議)
+- A Google AI Studio API key (for Gemma 3)
+
+### Setup & Run
+
+#### 1. Install dependencies
+
 ```shell
 pip install -r requirements.txt
 ```
-#### Hugging Face access
-```shell
-huggingface-cli login
+
+#### 2. Configure API key
+
+Edit `gemma3-chatbot.py` and replace the placeholder API key in:
+
+```python
+genai.configure(api_key="YOUR_API_KEY_HERE")
 ```
-#### Run Service
+
+with your own Google AI Studio API key. https://aistudio.google.com/
+
+#### 3. Run the app
+
 ```shell
-python ${fileName}
+python gemma3-chatbot.py
 ```
 
-Open `http://localhost:7860` in your browser.
-
-### Environment variables
-- `HF_MODEL_ID`: Override the model id. Default: `google/gemma-2b-it`.
-- `SYSTEM_PROMPT`: Customize the system prompt. Default instructs replies in Traditional Chinese.
-- `PORT`: Server port. Default: `7860`.
-
-### Parameter descriptions
-- `max_new_tokens`: Maximum number of new tokens generated per response. Higher means longer outputs but slower generation.
-- `temperature`: Sampling temperature (randomness). Lower is more deterministic; higher is more creative but can drift off-topic.
-- `top_p`: Nucleus sampling threshold. Sample only from the smallest set of tokens whose cumulative probability ≥ p; lower is more conservative.
+Then open `http://localhost:7860` in your browser to start chatting with Gemma 3 27B IT.
