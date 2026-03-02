@@ -1,8 +1,8 @@
 import gradio as gr
-import google.generativeai as genai
+from google import genai
+from google.genai import types
 
-genai.configure(api_key="[REPLACE-THIS-TEXT-WITH-YOUR-API-KEY]")
-MODEL = genai.GenerativeModel("gemma-3-27b-it")
+client = genai.Client(api_key="[REPLACE-THIS-TEXT-WITH-YOUR-API-KEY]")
 
 
 def respond(message: str, history: list[list[str]]):
@@ -11,20 +11,55 @@ def respond(message: str, history: list[list[str]]):
     - message: user's newest input message
     - history: [[user, bot], ...] conversation history
     """
-    # Transform history to Google API format
-    contents = []
+    # Transform history to google.genai format
+    contents: list[types.Content] = []
     for user_msg, bot_msg in history:
         if user_msg:
-            contents.append({"role": "user", "parts": [user_msg]})
+            contents.append(
+                types.Content(
+                    role="user",
+                    parts=[types.Part.from_text(user_msg)],
+                )
+            )
         if bot_msg:
-            contents.append({"role": "model", "parts": [bot_msg]})
+            contents.append(
+                types.Content(
+                    role="model",
+                    parts=[types.Part.from_text(bot_msg)],
+                )
+            )
 
     # Add current user message
-    contents.append({"role": "user", "parts": [message]})
+    contents.append(
+        types.Content(
+            role="user",
+            parts=[types.Part.from_text(message)],
+        )
+    )
 
-    response = MODEL.generate_content(contents=contents)
-    reply = response.text
-    return reply
+    response = client.models.generate_content(
+        model="gemma-3-27b-it",
+        contents=contents,
+    )
+
+    # Prefer the high-level text helper when available
+    reply = getattr(response, "text", None)
+    if reply:
+        return reply
+
+    # Fallback: manually extract text from candidates
+    if response and getattr(response, "candidates", None):
+        candidate = response.candidates[0]
+        if getattr(candidate, "content", None) and getattr(candidate.content, "parts", None):
+            parts = [
+                part.text
+                for part in candidate.content.parts
+                if hasattr(part, "text") and part.text is not None
+            ]
+            if parts:
+                return "".join(parts)
+
+    return "No response generated."
 
 demo = gr.ChatInterface(
     fn=respond,

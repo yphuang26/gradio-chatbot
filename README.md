@@ -2,11 +2,9 @@
 
 A simple Gradio chatbot powered by **Google API** using the `gemma-3-27b-it` model.
 
-此專案提供一個在瀏覽器中使用 Gemma 3 27B IT 的聊天機器人介面。
-
 ### Features
 
-- Uses `google.generativeai` with the `gemma-3-27b-it` model
+- Uses `google.genai` with the `gemma-3-27b-it` model
 - Remembers conversation history and sends it to the model
 - Simple Gradio `ChatInterface` UI
 
@@ -28,7 +26,7 @@ pip install -r requirements.txt
 Edit `gemma3-chatbot.py` and replace the placeholder API key in:
 
 ```python
-genai.configure(api_key="YOUR_API_KEY_HERE")
+client = genai.Client(api_key="YOUR_API_KEY_HERE")
 ```
 
 with your own Google AI Studio API key. https://aistudio.google.com/
