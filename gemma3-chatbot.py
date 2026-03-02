@@ -5,35 +5,36 @@ from google.genai import types
 client = genai.Client(api_key="[REPLACE-THIS-TEXT-WITH-YOUR-API-KEY]")
 
 
-def respond(message: str, history: list[list[str]]):
+def respond(message: str, history: list[dict]):
     """
     Gradio ChatInference callback.
     - message: user's newest input message
     - history: [[user, bot], ...] conversation history
     """
-    # Transform history to google.genai format
+    # Transform history (messages format) to google.genai format
     contents: list[types.Content] = []
-    for user_msg, bot_msg in history:
-        if user_msg:
-            contents.append(
-                types.Content(
-                    role="user",
-                    parts=[types.Part.from_text(user_msg)],
-                )
+    for msg in history:
+        role = msg.get("role")
+        text = msg.get("content")
+        if not text:
+            continue
+
+        # Map OpenAI-style roles to Gemini roles
+        if role == "assistant":
+            role = "model"
+
+        contents.append(
+            types.Content(
+                role=role,
+                parts=[types.Part(text=text)],
             )
-        if bot_msg:
-            contents.append(
-                types.Content(
-                    role="model",
-                    parts=[types.Part.from_text(bot_msg)],
-                )
-            )
+        )
 
     # Add current user message
     contents.append(
         types.Content(
             role="user",
-            parts=[types.Part.from_text(message)],
+            parts=[types.Part(text=message)],
         )
     )
 
@@ -65,6 +66,7 @@ demo = gr.ChatInterface(
     fn=respond,
     title="Gemma 3 27B IT Chatbot",
     description="A chatbot powered by Gemma 3 27B IT",
+    type="messages",
 )
 
 if __name__ == "__main__":
